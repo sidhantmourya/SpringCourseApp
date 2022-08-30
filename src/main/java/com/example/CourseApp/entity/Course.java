@@ -1,7 +1,14 @@
 package com.example.CourseApp.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@Entity
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Course {
-	
+	@Id
 	private Long id;
 	private String title;
 	private String description;

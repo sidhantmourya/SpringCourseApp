@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CourseApp.entity.Course;
 import com.example.CourseApp.service.CourseService;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @RestController
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class CourseController {
 	
 	@Autowired

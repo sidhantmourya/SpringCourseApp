@@ -5,24 +5,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.CourseApp.dao.CourseDao;
 import com.example.CourseApp.entity.Course;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 
-	List<Course> courses;
-	
+//	List<Course> courses;
+	@Autowired
+	private CourseDao courseDao;
 	
 	
 	public CourseServiceImpl() {
-		courses = new ArrayList<>();
-		courses.add(new Course(123L, "test1", "DescriptionCourse1") );
-		courses.add(new Course(124L, "test2", "DescriptionCourse2") );
-		courses.add(new Course(125L, "test3", "DescriptionCourse3") );
-		courses.add(new Course(126L, "test4", "DescriptionCourse4") );
-		courses.add(new Course(127L, "test5", "DescriptionCourse5") );
+//		courses = new ArrayList<>();
+//		courses.add(new Course(123L, "test1", "DescriptionCourse1") );
+//		courses.add(new Course(124L, "test2", "DescriptionCourse2") );
+//		courses.add(new Course(125L, "test3", "DescriptionCourse3") );
+//		courses.add(new Course(126L, "test4", "DescriptionCourse4") );
+//		courses.add(new Course(127L, "test5", "DescriptionCourse5") );
 	}
 
 
@@ -30,7 +33,7 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public List<Course> getCourses() {
 		
-		return courses;
+		return courseDao.findAll();
 	}
 
 
@@ -38,14 +41,14 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public Course getCourse(Long courseId) {
 		
-		for(Course course : this.courses)
-		{
-			if(course.getId() == courseId)
-			{
-				return course;
-			}
-		}
-		return new Course();
+//		for(Course course : courseDao.findAll())
+//		{
+//			if(course.getId() == courseId)
+//			{
+//				return course;
+//			}
+//		}
+		return courseDao.getReferenceById(courseId);
 		
 //		return this.courses.stream()
 //				.filter(course -> course.getId() == courseId)
@@ -58,7 +61,9 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public Course addCourse(Course course) {
-		this.courses.add(course);
+		courseDao.save(course);
+		
+//		this.courses.add(course);
 		return course;
 	}
 
@@ -78,14 +83,14 @@ public class CourseServiceImpl implements CourseService {
 //				break;
 //			}
 //		}
-		this.courses.forEach(tmpCourse -> {
-			if(tmpCourse.getId().equals(course.getId())
-					) {
-				tmpCourse.setDescription(course.getDescription());
-				tmpCourse.setTitle(course.getTitle());
-			}
-		}
-				);
+//		this.courses.forEach(tmpCourse -> {
+//			if(tmpCourse.getId().equals(course.getId())
+//					) {
+//				tmpCourse.setDescription(course.getDescription());
+//				tmpCourse.setTitle(course.getTitle());
+//			}
+//		}
+//				);
 //		c= this.courses.stream()
 //				 .filter(tmpCourse -> tmpCourse.getId() == course.getId())
 //				 .findFirst()
@@ -94,13 +99,16 @@ public class CourseServiceImpl implements CourseService {
 //		c.setDescription(course.getDescription());
 //		c.setTitle(course.getTitle());
 		
-		return course;
+		
+		return this.addCourse(course);
+		
+		
 	}
 
 
 
 	@Override
-	public void deleteCourse(Long courseId) {
+	public void deleteCourse(Long courseId) throws Exception {
 //		Course tmpCourse = null;
 //		for(int i=0;i<this.courses.size();i++)
 //		{
@@ -113,9 +121,16 @@ public class CourseServiceImpl implements CourseService {
 //		}
 //		return tmpCourse;
 		
-		courses= this.courses.stream()
-				.filter(course -> course.getId() != courseId)
-				.collect(Collectors.toList());
+//		courses= this.courses.stream()
+//				.filter(course -> course.getId() != courseId)
+//				.collect(Collectors.toList());
+		
+		Course course = this.courseDao.getReferenceById(courseId);
+		if(course != null)
+			this.courseDao.delete(course);
+		else
+			throw new Exception("No Entry Present");
+
 	}
 
 }
