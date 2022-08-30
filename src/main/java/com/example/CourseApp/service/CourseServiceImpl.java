@@ -2,6 +2,8 @@ package com.example.CourseApp.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,84 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public Course getCourse(Long courseId) {
 		
-		courses.forEach(course -> { return course.getId().equals(courseId) ? course : null; });
+		for(Course course : this.courses)
+		{
+			if(course.getId() == courseId)
+			{
+				return course;
+			}
+		}
+		return new Course();
+		
+//		return this.courses.stream()
+//				.filter(course -> course.getId() == courseId)
+//				.findFirst()
+//				.get();
+				
+	}
+
+
+
+	@Override
+	public Course addCourse(Course course) {
+		this.courses.add(course);
+		return course;
+	}
+
+
+
+	@Override
+	public Course updateCourse(Course course) {
+//		Course tmpCourse = null;
+//		for(int i=0;i<this.courses.size();i++)
+//		{
+//			tmpCourse = this.courses.get(i);
+//			if(tmpCourse.getId().equals(course.getId()))
+//			{
+//				tmpCourse.setDescription(course.getDescription());
+//				tmpCourse.setTitle(course.getTitle());
+//				this.courses.set(i, tmpCourse);
+//				break;
+//			}
+//		}
+		this.courses.forEach(tmpCourse -> {
+			if(tmpCourse.getId().equals(course.getId())
+					) {
+				tmpCourse.setDescription(course.getDescription());
+				tmpCourse.setTitle(course.getTitle());
+			}
+		}
+				);
+//		c= this.courses.stream()
+//				 .filter(tmpCourse -> tmpCourse.getId() == course.getId())
+//				 .findFirst()
+//				 .get();
+//		
+//		c.setDescription(course.getDescription());
+//		c.setTitle(course.getTitle());
+		
+		return course;
+	}
+
+
+
+	@Override
+	public void deleteCourse(Long courseId) {
+//		Course tmpCourse = null;
+//		for(int i=0;i<this.courses.size();i++)
+//		{
+//			tmpCourse = this.courses.get(i);
+//			if(tmpCourse.getId().equals(courseId))
+//			{
+//				this.courses.remove(i);
+//				break;
+//			}
+//		}
+//		return tmpCourse;
+		
+		courses= this.courses.stream()
+				.filter(course -> course.getId() != courseId)
+				.collect(Collectors.toList());
 	}
 
 }
